@@ -42,8 +42,8 @@ unittest_teardown()
 unittest(test_constants)
 {
   assertEqual(FLETCHER_16, 255);
-  assertEqual(FLETCHER_16, 65535UL);
-  assertEqual(FLETCHER_16, 4294967295ULL);
+  assertEqual(FLETCHER_32, 65535UL);
+  assertEqual(FLETCHER_64, 4294967295ULL);
 }
 
 
