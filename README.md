@@ -43,8 +43,21 @@ optional setting start values for s1 and s2. Note this is not part of the standa
 - **uint16_t getFletcher()** get the current checksum.
 - **uint32_t count()** get the number of items added. Merely a debugging feature, can overflow without affecting checksum.
 
-The checksum get with **getFletcher()** can be split relative easy to high and low part 
-and be used to "feed" begin again. See restart example.
+The checksum from **getFletcher()** can be split into a high and a low part 
+to be used to "feed" **begin()** again. See restart example.
+
+
+#### Performance
+
+Not tested ESP32 (and many other platforms) yet.
+First numbers of **.add(value)** measured with test sketch shows the following timing.
+
+| Checksum    |  UNO 16 MHz | ESP32 240 MHz |
+|:------------|:-----------:|:-------------:|
+| Fletcher16  |     3.8 us  |               |
+| Fletcher32  |     5.6 us  |               |
+| Fletcher64  |    10.1 us  |               |
+| Average     |     6.5 us  |               |
 
 
 ## Interface static functions
@@ -61,6 +74,24 @@ Use **\#include "Fletcher.h"**
 - **uint64_t fletcher64(uint32_t \*data, uint16_t length)** length in units of 4 bytes = 32 bits.
 
 
+#### Performance
+
+
+Not tested extensively, first numbers of **.add(array, length)**
+measured with **Fletcher_performance.ino** sketch shows the following timing.
+
+Lorem Ipsum text = 868 bytes.
+
+| Checksum    |  UNO 16 MHz | ESP32 240 MHz |
+|:------------|:-----------:|:-------------:|
+| Fletcher16  |    1120 us  |               |
+| Fletcher32  |     728 us  |               |
+| Fletcher64  |    1952 us  |               |
+| Average     |    1267 us  |               |
+
+Average 1267 / 868 = ~1.5 us per byte.
+
+
 ## Operation
 
 See examples.
@@ -75,5 +106,8 @@ See examples.
 - add Print interface
   - or Printable() ?
   - Stream ??
-- add getters for S1 and S2?
+- add getters for S1 and S2 in the classes
+- add parameter for start values for F in static functions
+  - would allow to use them in a stream too.
+
 
