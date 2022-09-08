@@ -29,6 +29,11 @@ void Fletcher64::add(uint32_t value)
 {
   _count++;
 #if defined(ARDUINO_ARCH_SAMD) || defined(ARDUINO_ARCH_AVR)
+  // bool __builtin_uadd_overflow(unsigned int, unsigned int, unsigned int*)
+  // bool __builtin_uaddl_overflow(long unsigned int, long unsigned int, long unsigned int*)
+  // bool __builtin_uaddll_overflow(long long unsigned int, long long unsigned int, long long unsigned int*)
+  // on SAMD all __builtin_uadd*_overflow work with 32 Bit variables
+  // on AVR __builtin_uadd_overflow works with 16 Bit and the others with 32 Bit
   if (__builtin_uaddl_overflow(_s1, value, &_s1)) {
     _s1++;
   }

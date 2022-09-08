@@ -55,12 +55,6 @@ uint64_t myfletcher64(uint32_t *data, const uint16_t length)
   return (s2 << 32) | s1;
 }
 
-void setup()
-{
-  Serial.begin(115200);
-  while (!Serial);
-}
-
 void test_fletcher16() {
   Serial.println("Fletcher16");
   const uint16_t max_len = MAX_LEN;
@@ -176,6 +170,12 @@ void test_fletcher64() {
   Serial.print("Created checksum: ");
   Serial.print(1024.0 * totaltime / float(DO_N * MAX_LEN));
   Serial.println(" us/kByte.");
+}
+
+void setup()
+{
+  Serial.begin(115200);
+  while (!Serial);
 }
 
 void loop() {
