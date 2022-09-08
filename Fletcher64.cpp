@@ -28,16 +28,22 @@ void Fletcher64::begin(uint32_t s1, uint32_t s2)
 void Fletcher64::add(uint32_t value)
 {
   _count++;
+#if defined(ARDUINO_ARCH_SAMD) || defined(ARDUINO_ARCH_AVR)
+  if (__builtin_uaddl_overflow(_s1, value, &_s1)) {
+    _s1++;
+  }
+  if (__builtin_uaddl_overflow(_s2, _s1, &_s2)) {
+    _s2++;
+  }
+#elif defined(ESP32) || defined(ESP8266)
   _s1 += value;
-#if defined(ARDUINO_ARCH_SAMD) || defined(ESP32) || defined(ESP8266)
   _s1 = (_s1 & ((((uint64_t) 1) << 32) - 1)) + (_s1 >> 32);
-#else
-  if (_s1 >= FLETCHER_64) _s1 -= FLETCHER_64;
-#endif
   _s2 += _s1;
-#if defined(ARDUINO_ARCH_SAMD) || defined(ESP32) || defined(ESP8266)
   _s2 = (_s2 & ((((uint64_t) 1) << 32) - 1)) + (_s2 >> 32);
 #else
+  _s1 += value;
+  if (_s1 >= FLETCHER_64) _s1 -= FLETCHER_64;
+  _s2 += _s1;
   if (_s2 >= FLETCHER_64) _s2 -= FLETCHER_64;
 #endif
 }

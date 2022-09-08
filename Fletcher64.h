@@ -20,12 +20,17 @@ public:
   void     add(uint32_t value);
   void     add(const uint32_t * array, uint16_t length);
 
-  uint64_t getFletcher() { return (_s2 << 32) | _s1; };
+  uint64_t getFletcher() { return (((uint64_t) _s2) << 32) | ((uint64_t) _s1); };
   uint32_t count()       { return _count; };
 
 private:
+#if defined(ARDUINO_ARCH_SAMD) || defined(ARDUINO_ARCH_AVR)
+  uint32_t _s1;
+  uint32_t _s2;
+#else
   uint64_t _s1;
   uint64_t _s2;
+#endif
   uint32_t _count;
 };
 
