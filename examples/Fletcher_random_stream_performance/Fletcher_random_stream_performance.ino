@@ -1,6 +1,6 @@
 /*
   Author: Daniel Mohr
-  Date: 2022-09-07
+  Date: 2022-09-08
   Purpose: shows stream performance
 */
 #include "Arduino.h"
@@ -9,6 +9,7 @@
 #include <Fletcher16.h>
 #include <Fletcher32.h>
 #include <Fletcher64.h>
+#include <Fletcher.h>
 
 #ifdef ARDUINO_ARCH_AVR
 #define MAX_LEN 1024
@@ -52,7 +53,10 @@ void test_fletcher16() {
     totaltime += t1 - t0;
   }
   Serial.print("Checksum: ");
-  Serial.println(checksum);
+  Serial.print(checksum);
+  Serial.print(" ( != ");
+  Serial.print(fletcher16(values, max_len));
+  Serial.println(" )");
   Serial.print("Created checksum: ");
   Serial.print(1024.0 * totaltime / float(DO_N * MAX_LEN));
   Serial.println(" us/kByte.");
@@ -86,7 +90,10 @@ void test_fletcher32() {
     totaltime += t1 - t0;
   }
   Serial.print("Checksum: ");
-  Serial.println(checksum);
+  Serial.print(checksum);
+  Serial.print(" ( != ");
+  Serial.print(fletcher32(values, max_len));
+  Serial.println(" )");
   Serial.print("Created checksum: ");
   Serial.print(1024.0 * totaltime / float(DO_N * MAX_LEN));
   Serial.println(" us/kByte.");
@@ -120,7 +127,10 @@ void test_fletcher64() {
     totaltime += t1 - t0;
   }
   Serial.print("Checksum: ");
-  Serial.println(print64(checksum));
+  Serial.print(print64(checksum));
+  Serial.print(" ( != ");
+  Serial.print(print64(fletcher64(values, max_len)));
+  Serial.println(" )");
   Serial.print("Created checksum: ");
   Serial.print(1024.0 * totaltime / float(DO_N * MAX_LEN));
   Serial.println(" us/kByte.");
