@@ -25,8 +25,8 @@ uint32_t myfletcher16(uint8_t *data, const uint16_t length)
   uint16_t s2 = 0;
   for (uint16_t i = 0; i < length; i++)
   {
-    s1 = (s1 + data[i]) % ((((uint16_t) 1)<<8) - 1);
-    s2 = (s2 + s1) % ((((uint16_t) 1)<<8) - 1);
+    s1 = (s1 + data[i]) % ((((uint16_t) 1) << 8) - 1);
+    s2 = (s2 + s1) % ((((uint16_t) 1) << 8) - 1);
   }
   return (s2 << 8) | s1;
 }
@@ -37,8 +37,8 @@ uint32_t myfletcher32(uint16_t *data, const uint16_t length)
   uint32_t s2 = 0;
   for (uint16_t i = 0; i < length; i++)
   {
-    s1 = (s1 + data[i]) % ((((uint32_t) 1)<<16) - 1);
-    s2 = (s2 + s1) % ((((uint32_t) 1)<<16) - 1);
+    s1 = (s1 + data[i]) % ((((uint32_t) 1) << 16) - 1);
+    s2 = (s2 + s1) % ((((uint32_t) 1) << 16) - 1);
   }
   return (s2 << 16) | s1;
 }
@@ -49,8 +49,8 @@ uint64_t myfletcher64(uint32_t *data, const uint16_t length)
   uint64_t s2 = 0;
   for (uint16_t i = 0; i < length; i++)
   {
-    s1 = (s1 + data[i]) % ((((uint64_t) 1)<<32) - 1);
-    s2 = (s2 + s1) % ((((uint64_t) 1)<<32) - 1);
+    s1 = (s1 + data[i]) % ((((uint64_t) 1) << 32) - 1);
+    s2 = (s2 + s1) % ((((uint64_t) 1) << 32) - 1);
   }
   return (s2 << 32) | s1;
 }
@@ -171,7 +171,7 @@ void test_fletcher64() {
   Serial.print(" ( != ");
   Serial.print(print64(fletcher64(values, max_len)));
   Serial.print(" != ");
-  Serial.print(myfletcher64(values, max_len));
+  Serial.print(print64(myfletcher64(values, max_len)));
   Serial.println(" )");
   Serial.print("Created checksum: ");
   Serial.print(1024.0 * totaltime / float(DO_N * MAX_LEN));
@@ -183,10 +183,10 @@ void loop() {
   Serial.print(MAX_LEN);
   Serial.println(" elements for Fletcher16");
   Serial.print("Using list of ");
-  Serial.print(MAX_LEN/2);
+  Serial.print(MAX_LEN / 2);
   Serial.println(" elements for Fletcher32");
   Serial.print("Using list of ");
-  Serial.print(MAX_LEN/4);
+  Serial.print(MAX_LEN / 4);
   Serial.println(" elements for Fletcher64");
   Serial.println("");
   test_fletcher16();
