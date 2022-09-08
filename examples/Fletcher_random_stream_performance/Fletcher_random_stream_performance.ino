@@ -171,7 +171,7 @@ void test_fletcher64() {
   Serial.print(" ( != ");
   Serial.print(print64(fletcher64(values, max_len)));
   Serial.print(" != ");
-  Serial.print(myfletcher64(values, max_len));
+  Serial.print(print64(myfletcher64(values, max_len)));
   Serial.println(" )");
   Serial.print("Created checksum: ");
   Serial.print(1024.0 * totaltime / float(DO_N * MAX_LEN));
