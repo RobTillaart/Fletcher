@@ -59,11 +59,11 @@ uint32_t fletcher32(uint16_t *data, uint16_t length)
       s1 += data[i++];
       s2 += s1;
     }
-    // s1 %= FLETCHER_32;
-    s1 = (s1 & 65535UL) + (s1 >> 16);
-    
-    // s2 %= FLETCHER_32;
-    s2 = (s2 & 65535UL) + (s2 >> 16);
+    s1 %= FLETCHER_32;
+    // does not work due to the above "32-bit" loop.
+    // s1 = (s1 & 65535UL) + (s1 >> 16);
+    s2 %= FLETCHER_32;
+    // s2 = (s2 & 65535UL) + (s2 >> 16);
   }
   return (s2 << 16) | s1;
 }
