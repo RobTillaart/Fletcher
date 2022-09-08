@@ -12,7 +12,8 @@
 //  0.1.1   2022-01-26   optimize % math  variation based upon to Anastase Nakassis (wikipedia)
 //  0.1.2   2022-01-26   add class implementation e.g. for streaming
 //  0.1.3   2022-04-15   fix #4 split .h in .h and .cpp
-//  0.1.4   2022-09-08   performance optimization (KUdos to Daniel Mohr).
+//  0.1.4   2022-09-08   performance optimization (Kudos to Daniel Mohr).
+//                       affects SAMD, ESP32 and ESP8266
 //                       fix FLETCHER_LIB_VERSION
 
 
