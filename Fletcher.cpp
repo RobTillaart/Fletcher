@@ -16,14 +16,7 @@
 //                       fix FLETCHER_LIB_VERSION
 
 
-#include "Arduino.h"
-
-
-#define FLETCHER_LIB_VERSION              (F("0.1.4"))
-
-#define FLETCHER_16                       255
-#define FLETCHER_32                       65535UL
-#define FLETCHER_64                       4294967295ULL
+#include "Fletcher.h"
 
 
 //
@@ -43,10 +36,11 @@ uint16_t fletcher16(uint8_t *data, uint16_t length)
       s1 += data[i++];
       s2 += s1;
     }
-    // s1 %= FLETCHER_16;
-    s1 = (s1 & 255) + (s1 >> 8);
-    // s2 %= FLETCHER_16;
-    s2 = (s2 & 255) + (s2 >> 8);
+    s1 %= FLETCHER_16;
+    //  does not work due to the above "32-bit" loop.
+    // s1 = (s1 & 255) + (s1 >> 8);   
+    s2 %= FLETCHER_16;
+    // s2 = (s2 & 255) + (s2 >> 8);
   }
   return (s2 << 8) | s1;
 }
@@ -87,9 +81,9 @@ uint64_t fletcher64(uint32_t *data, uint16_t length)
       s2 += s1;
     }
     // s1 %= FLETCHER_64;
-    s1 = (s1 & ((((uint64_t) 1)<<32)-1)) + (s1 >> 32);
+    s1 = (s1 & ((((uint64_t) 1) << 32) - 1)) + (s1 >> 32);
     // s2 %= FLETCHER_64;
-    s2 = (s2 & ((((uint64_t) 1)<<32)-1)) + (s2 >> 32);
+    s2 = (s2 & ((((uint64_t) 1) << 32) - 1)) + (s2 >> 32);
   }
   return (s2 << 32) | s1;
 }

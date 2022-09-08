@@ -30,13 +30,13 @@ void Fletcher64::add(uint32_t value)
   _count++;
   _s1 += value;
 #ifdef ARDUINO_ARCH_SAMD
-  _s1 = (_s1 & ((((uint64_t) 1)<<32)-1)) + (_s1 >> 32);
+  _s1 = (_s1 & ((((uint64_t) 1) << 32) - 1)) + (_s1 >> 32);
 #else
   if (_s1 >= FLETCHER_64) _s1 -= FLETCHER_64;
 #endif
   _s2 += _s1;
 #ifdef ARDUINO_ARCH_SAMD
-  _s2 = (_s2 & ((((uint64_t) 1)<<32)-1)) + (_s2 >> 32);
+  _s2 = (_s2 & ((((uint64_t) 1) << 32) - 1)) + (_s2 >> 32);
 #else
   if (_s2 >= FLETCHER_64) _s2 -= FLETCHER_64;
 #endif
