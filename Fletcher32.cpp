@@ -28,16 +28,23 @@ void Fletcher32::begin(uint16_t s1, uint16_t s2)
 void Fletcher32::add(uint16_t value)
 {
   _count++;
+#ifdef ARDUINO_ARCH_AVR
+  //Serial.println("__builtin_uadd_overflow");
+  if (__builtin_uadd_overflow(_s1, value, &_s1)) {
+    _s1++;
+  }
+  if (__builtin_uadd_overflow(_s2, _s1, &_s2)) {
+    _s2++;
+  }
+#elif defined(ARDUINO_ARCH_SAMD) || defined(ESP32) || defined(ESP8266)
   _s1 += value;
-#if defined(ARDUINO_ARCH_SAMD) || defined(ESP32) || defined(ESP8266)
   _s1 = (_s1 & 65535UL) + (_s1 >> 16);
-#else
-  if (_s1 >= FLETCHER_32) _s1 -= FLETCHER_32;
-#endif
   _s2 += _s1;
-#if defined(ARDUINO_ARCH_SAMD) || defined(ESP32) || defined(ESP8266)
   _s2 = (_s2 & 65535UL) + (_s2 >> 16);
 #else
+  _s1 += value;
+  if (_s1 >= FLETCHER_32) _s1 -= FLETCHER_32;
+  _s2 += _s1;
   if (_s2 >= FLETCHER_32) _s2 -= FLETCHER_32;
 #endif
 }
