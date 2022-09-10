@@ -22,6 +22,11 @@
 #else
 #define MAX_LEN 16384
 #endif
+union main_value_storage {
+  uint8_t uint8[MAX_LEN];
+  uint16_t uint16[MAX_LEN/2];
+  uint32_t uint32[MAX_LEN/4];
+} values;
 
 #define DO_N 23
 
@@ -58,13 +63,12 @@ String float2strn(float value, size_t n) {
 
 void test_fletcher16() {
   const size_t max_len = MAX_LEN;
-  uint8_t values[max_len];
-  for (byte m = 0; m < 2; m++) {
+  for (byte mode = 0; mode < 2; mode++) {
     for (size_t i = 0; i < max_len; i++) {
-      if (m == 0) {
-        values[i] = (uint8_t) random(0, 1 << 8);
+      if (mode == 0) {
+        values.uint8[i] = (uint8_t) random(0, 1 << 8);
       } else {
-        values[i] = (uint8_t) ((((uint16_t) 1) << 8) - 1);
+        values.uint8[i] = (uint8_t) ((((uint16_t) 1) << 8) - 1);
       }
     }
     uint32_t t0, t1;
@@ -73,13 +77,13 @@ void test_fletcher16() {
       /* reference */
       index = 0;
       t0 = micros();
-      checksum16[index] = basic_fletcher16(values, max_len);
+      checksum16[index] = basic_fletcher16(values.uint8, max_len);
       t1 = micros();
       totaltime16[index] += t1 - t0;
       /* 0.1.3 */
       index = 1;
       t0 = micros();
-      checksum16[index] = fletcher16_v0_1_3(values, max_len);
+      checksum16[index] = fletcher16_v0_1_3(values.uint8, max_len);
       t1 = micros();
       totaltime16[index] += t1 - t0;
       if (checksum16[index] != checksum16[0]) {
@@ -88,7 +92,7 @@ void test_fletcher16() {
       /* 0.1.4 */
       index = 2;
       t0 = micros();
-      checksum16[index] = fletcher16_v0_1_4(values, max_len);
+      checksum16[index] = fletcher16_v0_1_4(values.uint8, max_len);
       t1 = micros();
       totaltime16[index] += t1 - t0;
       if (checksum16[index] != checksum16[0]) {
@@ -97,7 +101,7 @@ void test_fletcher16() {
       /* 0.1.5 */
       index = 3;
       t0 = micros();
-      checksum16[index] = fletcher16_v0_1_5(values, max_len);
+      checksum16[index] = fletcher16_v0_1_5(values.uint8, max_len);
       t1 = micros();
       totaltime16[index] += t1 - t0;
       if (checksum16[index] != checksum16[0]) {
@@ -106,7 +110,7 @@ void test_fletcher16() {
       /* next */
       index = 4;
       t0 = micros();
-      checksum16[index] = fletcher16_next(values, max_len);
+      checksum16[index] = fletcher16_next(values.uint8, max_len);
       t1 = micros();
       totaltime16[index] += t1 - t0;
       if (checksum16[index] != checksum16[0]) {
@@ -115,7 +119,7 @@ void test_fletcher16() {
       /* if_statement */
       index = 5;
       t0 = micros();
-      checksum16[index] = fletcher16_if_statement(values, max_len);
+      checksum16[index] = fletcher16_if_statement(values.uint8, max_len);
       t1 = micros();
       totaltime16[index] += t1 - t0;
       if (checksum16[index] != checksum16[0]) {
@@ -124,7 +128,7 @@ void test_fletcher16() {
       /* bit_shift */
       index = 6;
       t0 = micros();
-      checksum16[index] = fletcher16_bit_shift(values, max_len);
+      checksum16[index] = fletcher16_bit_shift(values.uint8, max_len);
       t1 = micros();
       totaltime16[index] += t1 - t0;
       if (checksum16[index] != checksum16[0]) {
@@ -137,13 +141,12 @@ void test_fletcher16() {
 
 void test_fletcher32() {
   const size_t max_len = MAX_LEN / 2;
-  uint16_t values[max_len];
   for (byte m = 0; m < 2; m++) {
     for (size_t i = 0; i < max_len; i++) {
       if (m == 0) {
-        values[i] = (uint16_t) random(0, ((uint32_t) 1) << 16);
+        values.uint16[i] = (uint16_t) random(0, ((uint32_t) 1) << 16);
       } else {
-        values[i] = (uint16_t) ((((uint32_t) 1) << 16) - 1);
+        values.uint16[i] = (uint16_t) ((((uint32_t) 1) << 16) - 1);
       }
     }
     uint32_t t0, t1;
@@ -152,13 +155,13 @@ void test_fletcher32() {
       /* reference */
       index = 0;
       t0 = micros();
-      checksum32[index] = basic_fletcher32(values, max_len);
+      checksum32[index] = basic_fletcher32(values.uint16, max_len);
       t1 = micros();
       totaltime32[index] += t1 - t0;
       /* 0.1.3 */
       index = 1;
       t0 = micros();
-      checksum32[index] = fletcher32_v0_1_3(values, max_len);
+      checksum32[index] = fletcher32_v0_1_3(values.uint16, max_len);
       t1 = micros();
       totaltime32[index] += t1 - t0;
       if (checksum32[index] != checksum32[0]) {
@@ -167,7 +170,7 @@ void test_fletcher32() {
       /* 0.1.4 */
       index = 2;
       t0 = micros();
-      checksum32[index] = fletcher32_v0_1_4(values, max_len);
+      checksum32[index] = fletcher32_v0_1_4(values.uint16, max_len);
       t1 = micros();
       totaltime32[index] += t1 - t0;
       if (checksum32[index] != checksum32[0]) {
@@ -176,7 +179,7 @@ void test_fletcher32() {
       /* 0.1.5 */
       index = 3;
       t0 = micros();
-      checksum32[index] = fletcher32_v0_1_5(values, max_len);
+      checksum32[index] = fletcher32_v0_1_5(values.uint16, max_len);
       t1 = micros();
       totaltime32[index] += t1 - t0;
       if (checksum32[index] != checksum32[0]) {
@@ -185,7 +188,7 @@ void test_fletcher32() {
       /* next */
       index = 4;
       t0 = micros();
-      checksum32[index] = fletcher32_next(values, max_len);
+      checksum32[index] = fletcher32_next(values.uint16, max_len);
       t1 = micros();
       totaltime32[index] += t1 - t0;
       if (checksum32[index] != checksum32[0]) {
@@ -194,7 +197,7 @@ void test_fletcher32() {
       /* if_statement */
       index = 5;
       t0 = micros();
-      checksum32[index] = fletcher32_if_statement(values, max_len);
+      checksum32[index] = fletcher32_if_statement(values.uint16, max_len);
       t1 = micros();
       totaltime32[index] += t1 - t0;
       if (checksum32[index] != checksum32[0]) {
@@ -203,7 +206,7 @@ void test_fletcher32() {
       /* bit_shift */
       index = 6;
       t0 = micros();
-      checksum32[index] = fletcher32_bit_shift(values, max_len);
+      checksum32[index] = fletcher32_bit_shift(values.uint16, max_len);
       t1 = micros();
       totaltime32[index] += t1 - t0;
       if (checksum32[index] != checksum32[0]) {
@@ -213,7 +216,7 @@ void test_fletcher32() {
       /* overflow */
       index = 7;
       t0 = micros();
-      checksum32[index] = fletcher32_overflow(values, max_len);
+      checksum32[index] = fletcher32_overflow(values.uint16, max_len);
       t1 = micros();
       totaltime32[index] += t1 - t0;
       if (checksum32[index] != checksum32[0]) {
@@ -227,13 +230,12 @@ void test_fletcher32() {
 
 void test_fletcher64() {
   const size_t max_len = MAX_LEN / 4;
-  uint32_t values[max_len];
   for (byte m = 0; m < 2; m++) {
     for (size_t i = 0; i < max_len; i++) {
       if (m == 0) {
-        values[i] = ((uint32_t) random(0, ((uint32_t) 1) << 16)) + (((uint32_t) random(0, ((uint32_t) 1) << 16)) << 16);
+        values.uint32[i] = ((uint32_t) random(0, ((uint32_t) 1) << 16)) + (((uint32_t) random(0, ((uint32_t) 1) << 16)) << 16);
       } else {
-        values[i] = (uint32_t) ((((uint64_t) 1) << 32) - 1);
+        values.uint32[i] = (uint32_t) ((((uint64_t) 1) << 32) - 1);
       }
     }
     uint32_t t0, t1;
@@ -242,13 +244,13 @@ void test_fletcher64() {
       /* reference */
       index = 0;
       t0 = micros();
-      checksum64[index] = basic_fletcher64(values, max_len);
+      checksum64[index] = basic_fletcher64(values.uint32, max_len);
       t1 = micros();
       totaltime64[index] += t1 - t0;
       /* 0.1.3 */
       index = 1;
       t0 = micros();
-      checksum64[index] = fletcher64_v0_1_3(values, max_len);
+      checksum64[index] = fletcher64_v0_1_3(values.uint32, max_len);
       t1 = micros();
       totaltime64[index] += t1 - t0;
       if (checksum64[index] != checksum64[0]) {
@@ -257,7 +259,7 @@ void test_fletcher64() {
       /* 0.1.4 */
       index = 2;
       t0 = micros();
-      checksum64[index] = fletcher64_v0_1_4(values, max_len);
+      checksum64[index] = fletcher64_v0_1_4(values.uint32, max_len);
       t1 = micros();
       totaltime64[index] += t1 - t0;
       if (checksum64[index] != checksum64[0]) {
@@ -266,7 +268,7 @@ void test_fletcher64() {
       /* 0.1.5 */
       index = 3;
       t0 = micros();
-      checksum64[index] = fletcher64_v0_1_5(values, max_len);
+      checksum64[index] = fletcher64_v0_1_5(values.uint32, max_len);
       t1 = micros();
       totaltime64[index] += t1 - t0;
       if (checksum64[index] != checksum64[0]) {
@@ -275,7 +277,7 @@ void test_fletcher64() {
       /* next */
       index = 4;
       t0 = micros();
-      checksum64[index] = fletcher64_next(values, max_len);
+      checksum64[index] = fletcher64_next(values.uint32, max_len);
       t1 = micros();
       totaltime64[index] += t1 - t0;
       if (checksum64[index] != checksum64[0]) {
@@ -284,7 +286,7 @@ void test_fletcher64() {
       /* if_statement */
       index = 5;
       t0 = micros();
-      checksum64[index] = fletcher64_if_statement(values, max_len);
+      checksum64[index] = fletcher64_if_statement(values.uint32, max_len);
       t1 = micros();
       totaltime64[index] += t1 - t0;
       if (checksum64[index] != checksum64[0]) {
@@ -293,7 +295,7 @@ void test_fletcher64() {
       /* bit_shift */
       index = 6;
       t0 = micros();
-      checksum64[index] = fletcher64_bit_shift(values, max_len);
+      checksum64[index] = fletcher64_bit_shift(values.uint32, max_len);
       t1 = micros();
       totaltime64[index] += t1 - t0;
       if (checksum64[index] != checksum64[0]) {
@@ -302,7 +304,7 @@ void test_fletcher64() {
       /* overflow */
       index = 7;
       t0 = micros();
-      checksum64[index] = fletcher64_overflow(values, max_len);
+      checksum64[index] = fletcher64_overflow(values.uint32, max_len);
       t1 = micros();
       totaltime64[index] += t1 - t0;
       if (checksum64[index] != checksum64[0]) {

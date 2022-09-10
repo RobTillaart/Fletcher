@@ -1,7 +1,7 @@
 #pragma once
 /*
   Author: Daniel Mohr
-  Date: 2022-09-09
+  Date: 2022-09-10
 
   Here are implementations, which could be used in the next release.
 
@@ -17,19 +17,38 @@
 #define FLETCHER_32_next 65535UL
 #define FLETCHER_64_next 4294967295ULL
 
-uint16_t fletcher16_next(uint8_t *data, const uint16_t length)
+#if defined(ARDUINO_ARCH_AVR)
+uint16_t fletcher16_next(uint8_t *data, const size_t length)
+{
+  uint8_t _s1 = 0;
+  uint8_t _s2 = 0;
+  for (size_t i = 0; i < length; i++)
+    {
+      uint8_t t = 0xFF - data[i];
+      if (t >= _s1) _s1 += data[i];
+      else _s1 = _s1 + data[i] + 1;
+
+      t = 0xFF - _s1;
+      if (t >= _s2) _s2 += _s1;
+      else _s2 = _s2 + _s1 + 1;
+    }
+  return (((uint16_t)_s2) << 8) | _s1;
+}
+#else
+uint16_t fletcher16_next(uint8_t *data, const size_t length)
 {
   uint16_t _s1 = 0;
   uint16_t _s2 = 0;
-  for (uint16_t i = 0; i < length; i++)
+  for (size_t i = 0; i < length; i++)
   {
     _s1 += data[i];
     _s1 = (_s1 & 255) + (_s1 >> 8);
     _s2 += _s1;
     _s2 = (_s2 & 255) + (_s2 >> 8);
   }
-  return (_s2 << 8) | _s1;
+  return (((uint16_t)_s2) << 8) | _s1;
 }
+#endif
 
 uint32_t fletcher32_next(uint16_t *data, const uint16_t length)
 {
