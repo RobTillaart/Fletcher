@@ -20,8 +20,8 @@ public:
   void     add(uint16_t value);
   void     add(const uint16_t * array, uint16_t length);
 
-  uint32_t getFletcher() { return (_s2 << 16) | _s1; };
-  uint32_t count()       { return _count; };
+  uint32_t getFletcher();
+  uint32_t count();
 
 private:
   uint32_t _s1;
