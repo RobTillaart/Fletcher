@@ -19,14 +19,21 @@
 
 #define DO_N 23
 
+#if defined(ARDUINO_ARCH_AVR)
+String float2strn(float value, size_t n) {
+  char strvalout[n];
+  dtostrf(value, n, 2, strvalout);
+  return strvalout;
+}
+#else
 String float2strn(float value, size_t n) {
   String strval = String(value);
   while (strval.length() < n) {
     strval = " " + strval;
   }
   return strval;
-
 }
+#endif
 
 uint16_t myfletcher16(uint8_t *data, const size_t length)
 {
