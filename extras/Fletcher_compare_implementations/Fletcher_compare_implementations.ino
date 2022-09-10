@@ -40,14 +40,21 @@ bool checksum_correct16[n_implementations];
 bool checksum_correct32[n_implementations];
 bool checksum_correct64[n_implementations];
 
+#if defined(ARDUINO_ARCH_AVR)
+String float2strn(float value, size_t n) {
+  char strvalout[n];
+  dtostrf(value, n, 2, strvalout);
+  return strvalout;
+}
+#else
 String float2strn(float value, size_t n) {
   String strval = String(value);
   while (strval.length() < n) {
     strval = " " + strval;
   }
   return strval;
-
 }
+#endif
 
 void test_fletcher16() {
   const size_t max_len = MAX_LEN;
