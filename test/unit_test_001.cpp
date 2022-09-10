@@ -26,6 +26,9 @@
 
 #include "Arduino.h"
 #include "Fletcher.h"
+#include "Fletcher16.h"
+#include "Fletcher32.h"
+#include "Fletcher64.h"
 
 
 
