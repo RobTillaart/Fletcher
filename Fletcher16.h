@@ -20,7 +20,7 @@ public:
   void     add(uint8_t value);
   void     add(const uint8_t * array, uint16_t length);
 
-  uint16_t getFletcher() { return (((uint16_t)_s2) << 8) | _s1; };
+  uint16_t getFletcher();
   uint32_t count()       { return _count; };
 
 private:

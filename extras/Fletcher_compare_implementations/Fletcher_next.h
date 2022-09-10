@@ -32,6 +32,8 @@ uint16_t fletcher16_next(uint8_t *data, const size_t length)
       if (t >= _s2) _s2 += _s1;
       else _s2 = _s2 + _s1 + 1;
     }
+  _s1 = _s1 % 255;
+  _s2 = _s2 % 255;
   return (((uint16_t)_s2) << 8) | _s1;
 }
 #else
@@ -46,6 +48,8 @@ uint16_t fletcher16_next(uint8_t *data, const size_t length)
     _s2 += _s1;
     _s2 = (_s2 & 255) + (_s2 >> 8);
   }
+  _s1 = _s1 % 255;
+  _s2 = _s2 % 255;
   return (((uint16_t)_s2) << 8) | _s1;
 }
 #endif
