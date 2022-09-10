@@ -58,6 +58,12 @@ void Fletcher64::add(const uint32_t * array, uint16_t length)
   }
 }
 
+uint64_t Fletcher64::getFletcher() {
+  _s1 = _s1 % 4294967295ULL;
+  _s2 = _s2 % 4294967295ULL;
+  return (((uint64_t)_s2) << 16) | _s1;
+};
+
 
 // -- END OF FILE --
 
