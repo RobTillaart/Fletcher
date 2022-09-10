@@ -16,6 +16,11 @@
 #else
 #define MAX_LEN 16384
 #endif
+union main_value_storage {
+  uint8_t uint8[MAX_LEN];
+  uint16_t uint16[MAX_LEN/2];
+  uint32_t uint32[MAX_LEN/4];
+} values;
 
 #define DO_N 23
 
@@ -71,17 +76,24 @@ uint64_t myfletcher64(uint32_t *data, const size_t length)
   return (((uint64_t) s2) << 32) | ((uint64_t) s1);
 }
 
-void test_fletcher16() {
+void test_fletcher16(const byte mode) {
   Serial.print("| Fletcher16 |   ");
   const uint16_t max_len = MAX_LEN;
-  uint8_t values[max_len];
   uint32_t t0, t1;
   delay(100);
-  t0 = micros();
-  for (uint16_t i = 0; i < max_len; i++) {
-    values[i] = (uint8_t) random(0, 1 << 8);
+  if (mode == 0) {
+    t0 = micros();
+    for (uint16_t i = 0; i < max_len; i++) {
+      values.uint8[i] = (uint8_t) random(0, 1 << 8);
+    }
+    t1 = micros();
+  } else {
+    t0 = micros();
+    for (uint16_t i = 0; i < max_len; i++) {
+      values.uint8[i] = 255;
+    }
+    t1 = micros();
   }
-  t1 = micros();
   Serial.print(float2strn(1024.0 * (t1 - t0) / float(MAX_LEN), 8));
   Serial.print(" us/kByte |              ");
   Fletcher16 checksum_instance;
@@ -91,13 +103,13 @@ void test_fletcher16() {
     t0 = micros();
     checksum_instance.begin();
     for (uint16_t i = 0; i < max_len; i++) {
-      checksum_instance.add(values[i]);
+      checksum_instance.add(values.uint8[i]);
     }
     checksum = checksum_instance.getFletcher();
     t1 = micros();
     totaltime += t1 - t0;
   }
-  uint16_t reference_checksum = myfletcher16(values, max_len);
+  uint16_t reference_checksum = myfletcher16(values.uint8, max_len);
   Serial.print(reference_checksum);
   Serial.print(" |                ");
   Serial.print(checksum);
@@ -112,17 +124,24 @@ void test_fletcher16() {
   Serial.println(" |");
 }
 
-void test_fletcher32() {
+void test_fletcher32(const byte mode) {
   Serial.print("| Fletcher32 |   ");
   const uint16_t max_len = MAX_LEN / 2;
-  uint16_t values[max_len];
   uint32_t t0, t1;
   delay(100);
-  t0 = micros();
-  for (uint16_t i = 0; i < max_len; i++) {
-    values[i] = (uint16_t) random(0, ((uint32_t) 1) << 16);
+  if (mode == 0) {
+    t0 = micros();
+    for (uint16_t i = 0; i < max_len; i++) {
+      values.uint16[i] = (uint16_t) random(0, ((uint32_t) 1) << 16);
+    }
+    t1 = micros();
+  } else {
+    t0 = micros();
+    for (uint16_t i = 0; i < max_len; i++) {
+      values.uint16[i] = 65535UL;
+    }
+    t1 = micros();
   }
-  t1 = micros();
   Serial.print(float2strn(1024.0 * (t1 - t0) / float(MAX_LEN), 8));
   Serial.print(" us/kByte |         ");
   Fletcher32 checksum_instance;
@@ -132,13 +151,13 @@ void test_fletcher32() {
     t0 = micros();
     checksum_instance.begin();
     for (uint16_t i = 0; i < max_len; i++) {
-      checksum_instance.add(values[i]);
+      checksum_instance.add(values.uint16[i]);
     }
     checksum = checksum_instance.getFletcher();
     t1 = micros();
     totaltime += t1 - t0;
   }
-  uint32_t reference_checksum = myfletcher32(values, max_len);
+  uint32_t reference_checksum = myfletcher32(values.uint16, max_len);
   Serial.print(reference_checksum);
   Serial.print(" |           ");
   Serial.print(checksum);
@@ -153,17 +172,24 @@ void test_fletcher32() {
   Serial.println(" |");
 }
 
-void test_fletcher64() {
+void test_fletcher64(const byte mode) {
   Serial.print("| Fletcher64 |   ");
   const uint16_t max_len = MAX_LEN / 4;
-  uint32_t values[max_len];
   uint32_t t0, t1;
   delay(100);
-  t0 = micros();
-  for (uint16_t i = 0; i < max_len; i++) {
-    values[i] = ((uint32_t) random(0, ((uint32_t) 1) << 16)) + (((uint32_t) random(0, ((uint32_t) 1) << 16)) << 16);
+  if (mode == 0) {
+    t0 = micros();
+    for (uint16_t i = 0; i < max_len; i++) {
+      values.uint32[i] = ((uint32_t) random(0, ((uint32_t) 1) << 16)) + (((uint32_t) random(0, ((uint32_t) 1) << 16)) << 16);
+    }
+    t1 = micros();
+  } else {
+    t0 = micros();
+    for (uint16_t i = 0; i < max_len; i++) {
+      values.uint32[i] = 4294967295ULL;
+    }
+    t1 = micros();
   }
-  t1 = micros();
   Serial.print(float2strn(1024.0 * (t1 - t0) / float(MAX_LEN), 8));
   Serial.print(" us/kByte |    ");
   Fletcher64 checksum_instance;
@@ -173,13 +199,13 @@ void test_fletcher64() {
     t0 = micros();
     checksum_instance.begin();
     for (uint16_t i = 0; i < max_len; i++) {
-      checksum_instance.add(values[i]);
+      checksum_instance.add(values.uint32[i]);
     }
     checksum = checksum_instance.getFletcher();
     t1 = micros();
     totaltime += t1 - t0;
   }
-  uint64_t reference_checksum = myfletcher64(values, max_len);
+  uint64_t reference_checksum = myfletcher64(values.uint32, max_len);
   Serial.print(print64(reference_checksum));
   Serial.print(" | ");
   Serial.print(print64(checksum));
@@ -214,11 +240,14 @@ void loop() {
   Serial.println("+------------+---------------------+--------------------+----------------------+-------------------+---------+");
   Serial.println("| alg        | created random list | reference checksum | checksum             | datarate          | correct |");
   Serial.println("+------------+---------------------+--------------------+----------------------+-------------------+---------+");
-  test_fletcher16();
+  test_fletcher16(0);
+  test_fletcher16(1);
   Serial.println("+------------+---------------------+--------------------+----------------------+-------------------+---------+");
-  test_fletcher32();
+  test_fletcher32(0);
+  test_fletcher32(1);
   Serial.println("+------------+---------------------+--------------------+----------------------+-------------------+---------+");
-  test_fletcher64();
+  test_fletcher64(0);
+  test_fletcher64(1);
   Serial.println("+------------+---------------------+--------------------+----------------------+-------------------+---------+");
   Serial.println("");
   delay(1000);
