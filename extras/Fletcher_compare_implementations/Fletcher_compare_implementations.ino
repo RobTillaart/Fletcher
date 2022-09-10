@@ -1,15 +1,12 @@
 /*
   Author: Daniel Mohr
-  Date: 2022-09-08
-  Purpose: shows stream performance
+  Date: 2022-09-10
+  Purpose: shows stream performance for different implementations
 */
 #include "Arduino.h"
+#include <stdio.h>
 
 #include "printHelpers.h" // needed for Arduino Nano
-#include <Fletcher16.h>
-#include <Fletcher32.h>
-#include <Fletcher64.h>
-#include <Fletcher.h>
 
 #include "basic.h"
 #include "Fletcher_v0.1.3.h"
@@ -43,15 +40,24 @@ bool checksum_correct16[n_implementations];
 bool checksum_correct32[n_implementations];
 bool checksum_correct64[n_implementations];
 
+String float2strn(float value, size_t n) {
+  String strval = String(value);
+  while (strval.length() < n) {
+    strval = " " + strval;
+  }
+  return strval;
+
+}
+
 void test_fletcher16() {
   const size_t max_len = MAX_LEN;
   uint8_t values[max_len];
   for (byte m = 0; m < 2; m++) {
     for (size_t i = 0; i < max_len; i++) {
       if (m == 0) {
-	values[i] = (uint8_t) random(0, 1 << 8);
+        values[i] = (uint8_t) random(0, 1 << 8);
       } else {
-	values[i] = (uint8_t) ((((uint16_t) 1) << 8) - 1);
+        values[i] = (uint8_t) ((((uint16_t) 1) << 8) - 1);
       }
     }
     uint32_t t0, t1;
@@ -70,52 +76,52 @@ void test_fletcher16() {
       t1 = micros();
       totaltime16[index] += t1 - t0;
       if (checksum16[index] != checksum16[0]) {
-	checksum_correct16[index] = false;
+        checksum_correct16[index] = false;
       }
-      /* 0.1.4 */ 
+      /* 0.1.4 */
       index = 2;
       t0 = micros();
       checksum16[index] = fletcher16_v0_1_4(values, max_len);
       t1 = micros();
       totaltime16[index] += t1 - t0;
       if (checksum16[index] != checksum16[0]) {
-	checksum_correct16[index] = false;
+        checksum_correct16[index] = false;
       }
-      /* 0.1.5 */ 
+      /* 0.1.5 */
       index = 3;
       t0 = micros();
       checksum16[index] = fletcher16_v0_1_5(values, max_len);
       t1 = micros();
       totaltime16[index] += t1 - t0;
       if (checksum16[index] != checksum16[0]) {
-	checksum_correct16[index] = false;
+        checksum_correct16[index] = false;
       }
-      /* next */ 
+      /* next */
       index = 4;
       t0 = micros();
       checksum16[index] = fletcher16_next(values, max_len);
       t1 = micros();
       totaltime16[index] += t1 - t0;
       if (checksum16[index] != checksum16[0]) {
-	checksum_correct16[index] = false;
+        checksum_correct16[index] = false;
       }
-      /* if_statement */ 
+      /* if_statement */
       index = 5;
       t0 = micros();
       checksum16[index] = fletcher16_if_statement(values, max_len);
       t1 = micros();
       totaltime16[index] += t1 - t0;
       if (checksum16[index] != checksum16[0]) {
-	checksum_correct16[index] = false;
+        checksum_correct16[index] = false;
       }
-      /* bit_shift */ 
+      /* bit_shift */
       index = 6;
       t0 = micros();
       checksum16[index] = fletcher16_bit_shift(values, max_len);
       t1 = micros();
       totaltime16[index] += t1 - t0;
       if (checksum16[index] != checksum16[0]) {
-	checksum_correct16[index] = false;
+        checksum_correct16[index] = false;
       }
     }
   }
@@ -128,9 +134,9 @@ void test_fletcher32() {
   for (byte m = 0; m < 2; m++) {
     for (size_t i = 0; i < max_len; i++) {
       if (m == 0) {
-	values[i] = (uint16_t) random(0, ((uint32_t) 1) << 16);
+        values[i] = (uint16_t) random(0, ((uint32_t) 1) << 16);
       } else {
-	values[i] = (uint16_t) ((((uint32_t) 1) << 16) - 1);
+        values[i] = (uint16_t) ((((uint32_t) 1) << 16) - 1);
       }
     }
     uint32_t t0, t1;
@@ -149,7 +155,7 @@ void test_fletcher32() {
       t1 = micros();
       totaltime32[index] += t1 - t0;
       if (checksum32[index] != checksum32[0]) {
-	checksum_correct32[1] = false;
+        checksum_correct32[1] = false;
       }
       /* 0.1.4 */
       index = 2;
@@ -158,7 +164,7 @@ void test_fletcher32() {
       t1 = micros();
       totaltime32[index] += t1 - t0;
       if (checksum32[index] != checksum32[0]) {
-	checksum_correct32[1] = false;
+        checksum_correct32[1] = false;
       }
       /* 0.1.5 */
       index = 3;
@@ -167,7 +173,7 @@ void test_fletcher32() {
       t1 = micros();
       totaltime32[index] += t1 - t0;
       if (checksum32[index] != checksum32[0]) {
-	checksum_correct32[1] = false;
+        checksum_correct32[1] = false;
       }
       /* next */
       index = 4;
@@ -176,7 +182,7 @@ void test_fletcher32() {
       t1 = micros();
       totaltime32[index] += t1 - t0;
       if (checksum32[index] != checksum32[0]) {
-	checksum_correct32[1] = false;
+        checksum_correct32[1] = false;
       }
       /* if_statement */
       index = 5;
@@ -185,7 +191,7 @@ void test_fletcher32() {
       t1 = micros();
       totaltime32[index] += t1 - t0;
       if (checksum32[index] != checksum32[0]) {
-	checksum_correct32[1] = false;
+        checksum_correct32[1] = false;
       }
       /* bit_shift */
       index = 6;
@@ -194,7 +200,7 @@ void test_fletcher32() {
       t1 = micros();
       totaltime32[index] += t1 - t0;
       if (checksum32[index] != checksum32[0]) {
-	checksum_correct32[1] = false;
+        checksum_correct32[1] = false;
       }
 #ifdef ARDUINO_ARCH_AVR
       /* overflow */
@@ -204,7 +210,7 @@ void test_fletcher32() {
       t1 = micros();
       totaltime32[index] += t1 - t0;
       if (checksum32[index] != checksum32[0]) {
-	checksum_correct32[1] = false;
+        checksum_correct32[1] = false;
       }
 #endif
     }
@@ -218,9 +224,9 @@ void test_fletcher64() {
   for (byte m = 0; m < 2; m++) {
     for (size_t i = 0; i < max_len; i++) {
       if (m == 0) {
-	values[i] = ((uint32_t) random(0, ((uint32_t) 1) << 16)) + (((uint32_t) random(0, ((uint32_t) 1) << 16)) << 16);
+        values[i] = ((uint32_t) random(0, ((uint32_t) 1) << 16)) + (((uint32_t) random(0, ((uint32_t) 1) << 16)) << 16);
       } else {
-	values[i] = (uint32_t) ((((uint64_t) 1) << 32) - 1);
+        values[i] = (uint32_t) ((((uint64_t) 1) << 32) - 1);
       }
     }
     uint32_t t0, t1;
@@ -239,7 +245,7 @@ void test_fletcher64() {
       t1 = micros();
       totaltime64[index] += t1 - t0;
       if (checksum64[index] != checksum64[0]) {
-	checksum_correct64[1] = false;
+        checksum_correct64[1] = false;
       }
       /* 0.1.4 */
       index = 2;
@@ -248,7 +254,7 @@ void test_fletcher64() {
       t1 = micros();
       totaltime64[index] += t1 - t0;
       if (checksum64[index] != checksum64[0]) {
-	checksum_correct64[1] = false;
+        checksum_correct64[1] = false;
       }
       /* 0.1.5 */
       index = 3;
@@ -257,7 +263,7 @@ void test_fletcher64() {
       t1 = micros();
       totaltime64[index] += t1 - t0;
       if (checksum64[index] != checksum64[0]) {
-	checksum_correct64[1] = false;
+        checksum_correct64[1] = false;
       }
       /* next */
       index = 4;
@@ -266,7 +272,7 @@ void test_fletcher64() {
       t1 = micros();
       totaltime64[index] += t1 - t0;
       if (checksum64[index] != checksum64[0]) {
-	checksum_correct64[1] = false;
+        checksum_correct64[1] = false;
       }
       /* if_statement */
       index = 5;
@@ -275,7 +281,7 @@ void test_fletcher64() {
       t1 = micros();
       totaltime64[index] += t1 - t0;
       if (checksum64[index] != checksum64[0]) {
-	checksum_correct64[1] = false;
+        checksum_correct64[1] = false;
       }
       /* bit_shift */
       index = 6;
@@ -284,7 +290,7 @@ void test_fletcher64() {
       t1 = micros();
       totaltime64[index] += t1 - t0;
       if (checksum64[index] != checksum64[0]) {
-	checksum_correct64[1] = false;
+        checksum_correct64[1] = false;
       }
       /* overflow */
       index = 7;
@@ -293,7 +299,7 @@ void test_fletcher64() {
       t1 = micros();
       totaltime64[index] += t1 - t0;
       if (checksum64[index] != checksum64[0]) {
-	checksum_correct64[1] = false;
+        checksum_correct64[1] = false;
       }
     }
   }
@@ -338,19 +344,19 @@ void loop() {
   Serial.println("+------------+----------+----------+----------+----------+----------+----------+----------+----------+");
   Serial.print("| fletcher16 | ");
   for (uint16_t i = 0; i < n_implementations; i++) {
-    Serial.print(1024.0 * totaltime16[i] / float(n16 * MAX_LEN));
+    Serial.print(float2strn(1024.0 * totaltime16[i] / float(n16 * MAX_LEN), 8));
     Serial.print(" | ");
   }
   Serial.println("\n+------------+----------+----------+----------+----------+----------+----------+----------+----------+");
   Serial.print("| fletcher32 | ");
   for (uint16_t i = 0; i < n_implementations; i++) {
-    Serial.print(1024.0 * totaltime32[i] / float(n32 * MAX_LEN));
+    Serial.print(float2strn(1024.0 * totaltime32[i] / float(n32 * MAX_LEN), 8));
     Serial.print(" | ");
   }
   Serial.println("\n+------------+----------+----------+----------+----------+----------+----------+----------+----------+");
   Serial.print("| fletcher64 | ");
   for (uint16_t i = 0; i < n_implementations; i++) {
-    Serial.print(1024.0 * totaltime64[i] / float(n64 * MAX_LEN));
+    Serial.print(float2strn(1024.0 * totaltime64[i] / float(n64 * MAX_LEN), 8));
     Serial.print(" | ");
   }
   Serial.println("\n+------------+----------+----------+----------+----------+----------+----------+----------+----------+\n");
