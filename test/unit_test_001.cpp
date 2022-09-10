@@ -88,9 +88,9 @@ unittest(test_fletcher64)
 
 unittest(test_FF_1)
 {
-  uint8_t x[1] = 0xFF;
-  uint16_t y[1] = 0xFFFF;
-  uint32_t z[1] = 0xFFFFFFFF;
+  uint8_t x[1]  = { 0xFF };
+  uint16_t y[1] = { 0xFFFF };
+  uint32_t z[1] = { 0xFFFFFFFF };
   
   assertEqual(0, fletcher16(x, 1));
   assertEqual(0, fletcher32(y, 1));
@@ -103,7 +103,7 @@ unittest(test_FF_2)
   uint8_t x[1]  = { 0xFF };
   uint16_t y[1] = { 0xFFFF };
   uint32_t z[1] = { 0xFFFFFFFF };
-  
+
   Fletcher16 FL16;
   FL16.begin();
   assertEqual(0, FL16.getFletcher());
