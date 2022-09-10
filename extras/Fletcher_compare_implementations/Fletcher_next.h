@@ -77,7 +77,7 @@ uint32_t fletcher32_next(uint16_t *data, const size_t length)
       } 
       _s2 = t;
 #elif defined(ARDUINO_ARCH_SAMD) || defined(ESP32) || defined(ESP8266)
-      _s1 += value;
+      _s1 += data[i];
       _s1 = (_s1 & 65535UL) + (_s1 >> 16);
       _s2 += _s1;
       _s2 = (_s2 & 65535UL) + (_s2 >> 16);
