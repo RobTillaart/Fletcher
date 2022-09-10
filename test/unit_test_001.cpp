@@ -100,9 +100,9 @@ unittest(test_FF_1)
 
 unittest(test_FF_2)
 {
-  uint8_t x[1] = 0xFF;
-  uint16_t y[1] = 0xFFFF;
-  uint32_t z[1] = 0xFFFFFFFF;
+  uint8_t x[1]  = { 0xFF };
+  uint16_t y[1] = { 0xFFFF };
+  uint32_t z[1] = { 0xFFFFFFFF };
   
   Fletcher16 FL16;
   FL16.begin();
