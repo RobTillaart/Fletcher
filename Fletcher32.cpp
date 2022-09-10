@@ -1,6 +1,6 @@
 //
 //    FILE: Fletcher32.cpp
-//  AUTHOR: Rob Tillaart
+//  AUTHOR: Rob Tillaart, Daniel Mohr
 // PURPOSE: Arduino class for Fletcher32
 //     URL: https://github.com/RobTillaart/Fletcher
 
@@ -63,6 +63,11 @@ void Fletcher32::add(const uint16_t * array, uint16_t length)
   }
 }
 
+uint32_t Fletcher32::getFletcher() {
+  _s1 = _s1 % 65535UL;
+  _s2 = _s2 % 65535UL;
+  return (((uint32_t)_s2) << 16) | _s1;
+};
 
 // -- END OF FILE --
 
