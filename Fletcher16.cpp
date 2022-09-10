@@ -69,7 +69,7 @@ uint16_t Fletcher16::getFletcher()
 };
 
 
-uint32_t count()
+uint32_t Fletcher16::count()
 {
   return _count;
 };
