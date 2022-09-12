@@ -1,7 +1,7 @@
 #pragma once
 //
 //    FILE: Fletcher16.h
-//  AUTHOR: Rob Tillaart
+//  AUTHOR: Rob Tillaart, Daniel Mohr
 // PURPOSE: Arduino class for Fletcher16
 //     URL: https://github.com/RobTillaart/Fletcher
 
@@ -21,10 +21,10 @@ public:
   void     add(const uint8_t * array, uint16_t length);
 
   uint16_t getFletcher();
-  uint32_t count()       { return _count; };
+  uint32_t count();
 
 private:
-#if defined(ARDUINO_ARCH_AVR)
+#ifdef ARDUINO_ARCH_AVR
   uint8_t _s1;
   uint8_t _s2;
 #else

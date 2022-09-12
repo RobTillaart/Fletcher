@@ -21,7 +21,7 @@ public:
   void     add(const uint16_t * array, uint16_t length);
 
   uint32_t getFletcher();
-  uint32_t count()       { return _count; };
+  uint32_t count();
 
 private:
 #ifdef ARDUINO_ARCH_AVR

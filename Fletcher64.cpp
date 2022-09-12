@@ -10,7 +10,6 @@
 #define FLETCHER_64                       4294967295ULL
 
 
-
 Fletcher64::Fletcher64()
 {
   begin();
@@ -19,8 +18,8 @@ Fletcher64::Fletcher64()
 
 void Fletcher64::begin(uint32_t s1, uint32_t s2)
 {
-  _s1    = s1;
-  _s2    = s2;
+  _s1    = (s1 == FLETCHER_64) ? 0 : s1;
+  _s2    = (s2 == FLETCHER_64) ? 0 : s2;
   _count = 0;
 }
 
@@ -58,10 +57,18 @@ void Fletcher64::add(const uint32_t * array, uint16_t length)
   }
 }
 
-uint64_t Fletcher64::getFletcher() {
-  _s1 = _s1 % 4294967295ULL;
-  _s2 = _s2 % 4294967295ULL;
+
+uint64_t Fletcher64::getFletcher() 
+{
+  if (_s1 >= FLETCHER_64) _s1 -= FLETCHER_64;
+  if (_s2 >= FLETCHER_64) _s2 -= FLETCHER_64;
   return (((uint64_t)_s2) << 32) | _s1;
+};
+
+
+uint32_t Fletcher64::count()
+{
+  return _count;
 };
 
 

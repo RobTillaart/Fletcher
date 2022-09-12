@@ -10,7 +10,6 @@
 #define FLETCHER_32                       65535UL
 
 
-
 Fletcher32::Fletcher32()
 {
   begin();
@@ -19,8 +18,8 @@ Fletcher32::Fletcher32()
 
 void Fletcher32::begin(uint16_t s1, uint16_t s2)
 {
-  _s1    = s1;
-  _s2    = s2;
+  _s1    = (s1 == FLETCHER_32) ? 0 : s1;
+  _s2    = (s2 == FLETCHER_32) ? 0 : s2;
   _count = 0;
 }
 
@@ -63,11 +62,19 @@ void Fletcher32::add(const uint16_t * array, uint16_t length)
   }
 }
 
-uint32_t Fletcher32::getFletcher() {
-  _s1 = _s1 % 65535UL;
-  _s2 = _s2 % 65535UL;
+uint32_t Fletcher32::getFletcher() 
+{
+  if (_s1 >= FLETCHER_32) _s1 -= FLETCHER_32;
+  if (_s2 >= FLETCHER_32) _s2 -= FLETCHER_32;
   return (((uint32_t)_s2) << 16) | _s1;
 };
+
+
+uint32_t Fletcher32::count()
+{
+  return _count;
+};
+
 
 // -- END OF FILE --
 
