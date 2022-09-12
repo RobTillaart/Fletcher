@@ -32,8 +32,8 @@ uint32_t basic_fletcher32(uint16_t *data, const size_t length)
 
 uint64_t basic_fletcher64(uint32_t *data, const size_t length)
 {
-  uint16_t s1 = 0;
-  uint16_t s2 = 0;
+  uint32_t s1 = 0;
+  uint32_t s2 = 0;
   for (size_t i = 0; i < length; i++)
   {
     s1 = (s1 + data[i]) % ((((uint64_t) 1) << 32) - ((uint64_t) 1));
