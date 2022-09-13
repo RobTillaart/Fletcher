@@ -111,6 +111,8 @@ unittest(test_FF_2)
   assertEqual(0, FL16.getFletcher());
   FL16.add(0xFF);
   assertEqual(0, FL16.getFletcher());
+  FL16.add(0xFF);
+  assertEqual(0, FL16.getFletcher());
 
   Fletcher32 FL32;
   FL32.begin();
@@ -119,11 +121,15 @@ unittest(test_FF_2)
   assertEqual(0, FL32.getFletcher());
   FL32.add(0xFFFF);
   assertEqual(0, FL32.getFletcher());
+  FL32.add(0xFFFF);
+  assertEqual(0, FL32.getFletcher());
 
   Fletcher64 FL64;
   FL64.begin();
   assertEqual(0, FL64.getFletcher());
   FL64.begin(0xFFFFFFFF, 0);
+  assertEqual(0, FL64.getFletcher());
+  FL64.add(0xFFFFFFFF);
   assertEqual(0, FL64.getFletcher());
   FL64.add(0xFFFFFFFF);
   assertEqual(0, FL64.getFletcher());
