@@ -1,6 +1,6 @@
 /*
   Author: Daniel Mohr
-  Date: 2022-09-08
+  Date: 2022-09-13
   Purpose: shows stream performance
 */
 #include "Arduino.h"
@@ -18,8 +18,8 @@
 #endif
 union main_value_storage {
   uint8_t uint8[MAX_LEN];
-  uint16_t uint16[MAX_LEN/2];
-  uint32_t uint32[MAX_LEN/4];
+  uint16_t uint16[MAX_LEN / 2];
+  uint32_t uint32[MAX_LEN / 4];
 } values;
 
 #define DO_N 23
@@ -46,8 +46,8 @@ uint16_t myfletcher16(uint8_t *data, const size_t length)
   uint8_t s2 = 0;
   for (size_t i = 0; i < length; i++)
   {
-    s1 = (uint8_t) (((uint16_t) (s1 + data[i])) % ((((uint16_t) 1) << 8) - ((uint16_t) 1)));
-    s2 = (uint8_t) (((uint16_t) (s2 + s1)) % ((((uint16_t) 1) << 8) - ((uint16_t) 1)));
+    s1 = (uint8_t) (((uint16_t) s1 + (uint16_t) data[i]) % ((((uint16_t) 1) << 8) - ((uint16_t) 1)));
+    s2 = (uint8_t) (((uint16_t) s2 + (uint16_t) s1) % ((((uint16_t) 1) << 8) - ((uint16_t) 1)));
   }
   return (((uint16_t) s2) << 8) | ((uint16_t) s1);
 }
@@ -58,8 +58,8 @@ uint32_t myfletcher32(uint16_t *data, const size_t length)
   uint16_t s2 = 0;
   for (size_t i = 0; i < length; i++)
   {
-    s1 = (uint16_t) (((uint32_t) (s1 + data[i])) % ((((uint32_t) 1) << 16) - ((uint32_t) 1)));
-    s2 = (uint16_t) (((uint32_t) (s2 + s1)) % ((((uint32_t) 1) << 16) - ((uint32_t) 1)));
+    s1 = (uint16_t) (((uint32_t) s1 + (uint32_t) data[i]) % ((((uint32_t) 1) << 16) - ((uint32_t) 1)));
+    s2 = (uint16_t) (((uint32_t) s2 + (uint32_t) s1) % ((((uint32_t) 1) << 16) - ((uint32_t) 1)));
   }
   return (((uint32_t) s2) << 16) | ((uint32_t) s1);
 }
@@ -70,8 +70,8 @@ uint64_t myfletcher64(uint32_t *data, const size_t length)
   uint32_t s2 = 0;
   for (size_t i = 0; i < length; i++)
   {
-    s1 = (uint32_t) (((uint64_t) (s1 + data[i])) % ((((uint64_t) 1) << 32) - ((uint64_t) 1)));
-    s2 = (uint32_t) (((uint64_t) (s2 + s1)) % ((((uint64_t) 1) << 32) - ((uint64_t) 1)));
+    s1 = (uint32_t) (((uint64_t) s1 + (uint64_t) data[i]) % ((((uint64_t) 1) << 32) - ((uint64_t) 1)));
+    s2 = (uint32_t) (((uint64_t) s2 + (uint64_t) s1) % ((((uint64_t) 1) << 32) - ((uint64_t) 1)));
   }
   return (((uint64_t) s2) << 32) | ((uint64_t) s1);
 }
