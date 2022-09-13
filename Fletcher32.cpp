@@ -7,7 +7,8 @@
 
 #include "Fletcher32.h"
 
-#define FLETCHER_32                       65535UL
+// UINT16_MAX = 65535UL = ((((uint32_t) 1) << 16) - 1)
+#define FLETCHER_32 UINT16_MAX
 
 
 Fletcher32::Fletcher32()
@@ -41,9 +42,9 @@ void Fletcher32::add(uint16_t value)
   _s2 = t;
 #elif defined(ARDUINO_ARCH_SAMD) || defined(ESP32) || defined(ESP8266)
   _s1 += value;
-  _s1 = (_s1 & 65535UL) + (_s1 >> 16);
+  _s1 = (_s1 & FLETCHER_32) + (_s1 >> 16);
   _s2 += _s1;
-  _s2 = (_s2 & 65535UL) + (_s2 >> 16);
+  _s2 = (_s2 & FLETCHER_32) + (_s2 >> 16);
 #else
   _s1 += value;
   if (_s1 >= FLETCHER_32) _s1 -= FLETCHER_32;
