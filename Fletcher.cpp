@@ -15,7 +15,7 @@
 //  max length buffer 65534.
 //  Wikipedia shows optimizations.
 //
-uint16_t fletcher16(uint8_t *data, uint16_t length, uint32_t s1 = 0, uint32_t s2 = 0)
+uint16_t fletcher16(uint8_t *data, uint16_t length, uint32_t s1, uint32_t s2)
 {
   uint32_t _s1 = s1;
   uint32_t _s2 = s2;
@@ -37,7 +37,7 @@ uint16_t fletcher16(uint8_t *data, uint16_t length, uint32_t s1 = 0, uint32_t s2
 }
 
 
-uint32_t fletcher32(uint16_t *data, uint16_t length, uint32_t s1 = 0, uint32_t s2 = 0)
+uint32_t fletcher32(uint16_t *data, uint16_t length, uint32_t s1, uint32_t s2)
 {
   uint32_t _s1 = s1;
   uint32_t _s2 = s2;
@@ -56,7 +56,7 @@ uint32_t fletcher32(uint16_t *data, uint16_t length, uint32_t s1 = 0, uint32_t s
 }
 
 
-uint64_t fletcher64(uint32_t *data, uint16_t length, uint64_t s1 = 0, uint64_t s2 = 0)
+uint64_t fletcher64(uint32_t *data, uint16_t length, uint64_t s1, uint64_t s2)
 {
   uint64_t _s1 = s1;
   uint64_t _s2 = s2;
